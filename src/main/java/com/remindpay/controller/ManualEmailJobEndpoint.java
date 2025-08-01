@@ -1,5 +1,6 @@
 package com.remindpay.controller;
 
+import com.remindpay.dto.SmsResponse;
 import com.remindpay.scheduler.SmsReminderJob;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -18,7 +19,8 @@ public class ManualEmailJobEndpoint {
     @GET
     @RolesAllowed("ADMIN")
     public Response sendReminderNow() {
-        job.sendDailyReminders(); // executa com injeção real
-        return Response.ok("Executado").build();
+        job.sendDailyReminders();
+        return Response.ok().build();
+
     }
 }

@@ -2,9 +2,9 @@ package com.remindpay.service;
 
 import com.remindpay.scheduler.Message;
 
-public interface NotificationService {
+public interface NotificationService <R> {
 
-    void send(Message message);
+    R send(Message message);
 
 
 }

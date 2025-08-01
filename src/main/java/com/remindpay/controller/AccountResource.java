@@ -1,9 +1,11 @@
 package com.remindpay.controller;
 
 import com.remindpay.dto.AccountRequestDto;
+import com.remindpay.dto.StatusConta;
 import com.remindpay.mapper.AccountMapper;
 import com.remindpay.model.Account;
 import com.remindpay.model.Category;
+import com.remindpay.model.User;
 import com.remindpay.service.AccountService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -35,6 +37,13 @@ public class AccountResource {
         account.setName(accountRequestDto.getName());
         account.setCategory(new Category());
         account.getCategory().setId(accountRequestDto.getCategoryId());
+        account.setValue(accountRequestDto.getValue());
+        account.setStatus(StatusConta.valueOf(accountRequestDto.getStatus().toUpperCase()));
+        account.setDueDay(accountRequestDto.getDueDay());
+
+        User user = new User();
+        user.setId(accountRequestDto.getUserId());
+        account.setUser(user);
 
         accountService.create(account);
 

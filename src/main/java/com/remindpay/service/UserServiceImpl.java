@@ -9,7 +9,6 @@ import com.remindpay.utils.PasswordUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped

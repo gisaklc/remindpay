@@ -1,32 +1,41 @@
 package com.remindpay.model;
 
+import com.remindpay.dto.StatusConta;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "accounts")
 public class Account {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private BigDecimal value;
+
+    @Column(nullable = false)
+    private int dueDay;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusConta status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<UserAccount> userAccounts;
-
-    public Account() {
-    }
-
-    public Account(UUID id) {
-        this.id = id;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    public User user;
 
     public UUID getId() {
         return id;
@@ -44,6 +53,30 @@ public class Account {
         this.name = name;
     }
 
+    public int getDueDay() {
+        return dueDay;
+    }
+
+    public void setDueDay(int dueDay) {
+        this.dueDay = dueDay;
+    }
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public void setValue(BigDecimal value) {
+        this.value = value;
+    }
+
+    public StatusConta getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusConta status) {
+        this.status = status;
+    }
+
     public Category getCategory() {
         return category;
     }
@@ -52,11 +85,11 @@ public class Account {
         this.category = category;
     }
 
-    public Set<UserAccount> getUserAccounts() {
-        return userAccounts;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserAccounts(Set<UserAccount> userAccounts) {
-        this.userAccounts = userAccounts;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

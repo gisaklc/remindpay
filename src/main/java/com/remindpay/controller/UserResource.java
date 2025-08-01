@@ -42,8 +42,7 @@ public class UserResource {
     @Path("/login")
     public Response login(UserLoginDto dto) {
         AccessToken accessToken = userService.authenticate(dto.getEmail(), dto.getPassword());
-
-        return Response.ok(accessToken).build();
+    return Response.ok(accessToken).build();
 
     }
 

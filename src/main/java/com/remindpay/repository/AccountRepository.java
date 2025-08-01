@@ -18,4 +18,9 @@ public class AccountRepository implements PanacheRepositoryBase<Account, UUID> {
     public List<Account> findByIdCategory(UUID categoryId) {
         return find("category.id", categoryId).list();
     }
+
+    // Implementação do método que busca por nome e userId
+    public Optional<Account> findByNameAndUserId(String accountName, UUID userId) {
+        return find("name = ?1 and user.id = ?2", accountName, userId).firstResultOptional();
+    }
 }

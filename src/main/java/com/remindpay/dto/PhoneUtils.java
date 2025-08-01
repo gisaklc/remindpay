@@ -10,7 +10,7 @@ public class PhoneUtils {
         phoneNumber = phoneNumber.trim();
 
         if (!phoneNumber.startsWith("+")) {
-            phoneNumber = "+55" + phoneNumber;
+            phoneNumber = "55" + phoneNumber;
         }
 
         return phoneNumber;

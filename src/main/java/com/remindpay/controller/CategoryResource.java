@@ -20,7 +20,7 @@ public class CategoryResource {
 
     @POST
     @Transactional
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({"ADMIN, USER"})
     public Response createCategory(CategoryRequestDto dto) {
         Category category = new Category();
         category.setName(dto.getName());

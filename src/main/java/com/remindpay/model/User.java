@@ -21,14 +21,12 @@ public class User {
     @Type(ListArrayType.class)
     @Column(name = "roles", columnDefinition = "varchar[]")
     private List<String> roles;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<UserAccount> userAccounts;
+
+    // Relacionamento 1:N: um usuário tem várias contas
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Account> accounts;
 
     public User() {}
-
-    public User(UUID id) {
-        this.id = id;
-    }
 
     public UUID getId() {
         return id;
@@ -62,14 +60,6 @@ public class User {
         this.password = password;
     }
 
-    public List<UserAccount> getUserAccounts() {
-        return userAccounts;
-    }
-
-    public void setUserAccounts(List<UserAccount> userAccounts) {
-        this.userAccounts = userAccounts;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -84,5 +74,13 @@ public class User {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
     }
 }

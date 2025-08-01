@@ -1,59 +1,55 @@
 package com.remindpay.service;
 
+import com.remindpay.client.InfobipClient;
+import com.remindpay.dto.SmsRequest;
+import com.remindpay.dto.SmsResponse;
+import com.remindpay.utils.JsonUtil;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import jakarta.inject.Inject;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.vonage.client.VonageClient;
-import com.vonage.client.sms.SmsSubmissionResponse;
-import com.vonage.client.sms.MessageStatus;
-import com.vonage.client.sms.messages.TextMessage;
+
+import java.util.List;
 
 @ApplicationScoped
 public class SmsService  implements NotificationService {
 
     private static final Logger log = LoggerFactory.getLogger(SmsService.class);
 
-    @ConfigProperty(name = "vonage.api.key")
-    String apiKey;
-
-    @ConfigProperty(name = "vonage.api.secret")
-    String apiSecret;
-
-    @ConfigProperty(name = "vonage.from.name")
-    String fromName; // pode ser número ou nome curto (ex: "RemindPay")
+    @Inject
+    @RestClient
+    InfobipClient infobipClient;
 
     public SmsService() {}
 
-    public void send(com.remindpay.scheduler.Message m) {
+    @Override
+    public SmsResponse send(com.remindpay.scheduler.Message m) {
+        SmsRequest request = new SmsRequest();
 
+        SmsRequest.Message message = new SmsRequest.Message();
+        SmsRequest.Destination destination = new SmsRequest.Destination();
+        destination.setTo(m.getTo());
+
+        message.setDestinations(List.of(destination));
+        message.setFrom("29175"); // seu remetente Infobip
+        message.setText(m.getMessage());
+
+        request.setMessages(List.of(message));
+        String json1 = JsonUtil.toJson(request, "");
+        log.info(json1);
+        SmsResponse response = null; // declarar aqui fora
         try {
+            response = infobipClient.sendSms(request);
 
-            VonageClient client = VonageClient.builder()
-                    .apiKey(apiKey)
-                    .apiSecret(apiSecret)
-                    .build();
-
-            TextMessage message = new TextMessage(
-                    fromName,
-                    m.getTo(),
-                    m.getMessage());
-            log.info("Mensagem {}", m.getMessage());
-
-            SmsSubmissionResponse response = client.getSmsClient().submitMessage(message);
-
-            var msgResp = response.getMessages().get(0);
-            if (msgResp.getStatus() == MessageStatus.OK) {
-                log.info("SMS enviado com sucesso para {}", m.getTo());
-            } else {
-                log.error("Falha ao enviar SMS para {}: {}", m.getTo(), msgResp.getErrorText());
-            }
-
-
+            String json = JsonUtil.toJson(response, "");
+            log.info("SMS Enviado com sucesso!");
+            log.info("Resposta Infobip: " + json);
         } catch (Exception e) {
-            log.error("Erro ao enviar SMS: {}", e.getMessage(), e);
-            throw new RuntimeException("Erro ao enviar SMS via Vonage", e);
+            log.error("Erro ao enviar SMS para Infobip: " + e.getMessage());
+            throw e;
         }
-
+        return response;
     }
 }
+
