@@ -4,16 +4,14 @@ import com.remindpay.dto.AccessToken;
 import com.remindpay.dto.UserLoginDto;
 import com.remindpay.dto.UserRequestDto;
 import com.remindpay.mapper.UserMapper;
+import com.remindpay.model.Category;
 import com.remindpay.model.User;
 import com.remindpay.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -31,7 +29,6 @@ public class UserResource {
     @POST
     @Transactional
     public Response createAccount(@Valid UserRequestDto userRequestDto) {
-
          var user = userMapper.toEntity(userRequestDto);
          userService.create(user);
 
@@ -43,7 +40,12 @@ public class UserResource {
     public Response login(UserLoginDto dto) {
         AccessToken accessToken = userService.authenticate(dto.getEmail(), dto.getPassword());
     return Response.ok(accessToken).build();
+    }
 
+    @GET
+    public Response listAll() {
+
+        return Response.ok(userMapper.toDto(userService.listAll())).build();
     }
 
 }

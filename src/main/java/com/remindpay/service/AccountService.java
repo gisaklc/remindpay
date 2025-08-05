@@ -10,6 +10,6 @@ public interface AccountService {
     void create(Account account);
     List<Account> listAll();
     Account findById(UUID id);
-    public List<Account> findAccountsByCategoryId(UUID categoryId);
+    List<Account> findAccountsByCategoryId(UUID categoryId);
 
 }

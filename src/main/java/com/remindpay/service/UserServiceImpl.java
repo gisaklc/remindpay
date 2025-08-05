@@ -9,6 +9,7 @@ import com.remindpay.utils.PasswordUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -45,6 +46,11 @@ public class UserServiceImpl implements UserService {
         }
 
         return new AccessToken(jwtService.generateToken(user.getEmail(), user.getRoles()));
+    }
+
+    @Override
+    public List<User> listAll() {
+        return userRepository.listAll();
     }
 
 
