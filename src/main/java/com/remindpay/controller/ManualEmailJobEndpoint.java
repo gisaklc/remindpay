@@ -1,6 +1,5 @@
 package com.remindpay.controller;
 
-import com.remindpay.dto.SmsResponse;
 import com.remindpay.scheduler.SmsReminderJob;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;

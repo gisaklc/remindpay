@@ -6,7 +6,7 @@ services:
     container_name: remindpay-db
     restart: always
     ports:
-      - "5435:5432"  # Porta externa 5435 → interna 5432
+      - "5435:5432"
     environment:
       POSTGRES_DB: remindpay
       POSTGRES_USER: postgres
@@ -25,6 +25,28 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin123
+    depends_on:
+      - postgres
+    networks:
+      - remindpay-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: remindpay-app
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env  # Carrega variáveis do .env
+    environment:
+      TZ: America/Sao_Paulo
+      # valores abaixo podem ser sobrescritos pelo .env
+      QUARKUS_DATASOURCE_JDBC_URL: ${DB_URL:-jdbc:postgresql://postgres:5432/remindpay}
+      QUARKUS_DATASOURCE_USERNAME: ${DB_USER:-postgres}
+      QUARKUS_DATASOURCE_PASSWORD: ${DB_PASS:-postgres}
+      QUARKUS_HTTP_PORT: 8080
     depends_on:
       - postgres
     networks:
