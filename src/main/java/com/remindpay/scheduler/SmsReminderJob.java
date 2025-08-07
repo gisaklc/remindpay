@@ -30,7 +30,7 @@ public class SmsReminderJob {
     @Inject
     AccountRepository accountRepository;
 
-    @Scheduled(cron = "0 35 11 * * ?")// todos os dias às 08:00
+    @Scheduled(cron = "${reminder.cron}")
     public void sendDailyReminders() {
 
         List<Account> userAccounts = accountRepository.findAll().list();
