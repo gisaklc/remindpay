@@ -18,12 +18,12 @@ public class UserRequestDto {
     @NotBlank(message = "Informe a senha")
     private String password;
 
+    @NotBlank(message = "Informe o telefone")
     @Pattern(
             regexp = "^\\d{10,11}$", // Ex: 21972265407
             message = "Informe apenas DDD + número. Ex: 21972265407"
     )
     private String phoneNumber;
-
 
     private List<String> roles; // opcional, se quiser permitir criação com papéis
 
