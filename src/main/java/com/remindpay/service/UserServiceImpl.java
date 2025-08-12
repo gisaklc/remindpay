@@ -8,6 +8,8 @@ import com.remindpay.repository.UserRepository;
 import com.remindpay.utils.PasswordUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,11 +17,14 @@ import java.util.Optional;
 @ApplicationScoped
 public class UserServiceImpl implements UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Inject
     UserRepository userRepository;
 
     @Inject
     JwtService jwtService;
+
 
     @Override
     public void create(User user) {
@@ -30,6 +35,9 @@ public class UserServiceImpl implements UserService {
         }
         String hashedPassword = PasswordUtils.hash(user.getPassword());
         user.setPassword(hashedPassword);
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+             user.setRoles(List.of("USER"));
+        }
 
         userRepository.persist(user);
     }
@@ -45,7 +53,15 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException("Credenciais inválidas.", HttpErrorCode.UNAUTHORIZED.getCode());
         }
 
-        return new AccessToken(jwtService.generateToken(user.getEmail(), user.getRoles()));
+        try {
+            return new AccessToken(jwtService.generateToken(user.getEmail(), user.getRoles()));
+        } catch (Exception e) {
+            log.error("Erro ao gerar token para o usuário {}. Roles: {}",
+                    user.getEmail(),
+                    user.getRoles(),
+                    e);
+            throw e; // Propaga para ser tratado na camada superior
+        }
     }
 
     @Override
