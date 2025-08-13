@@ -27,7 +27,7 @@ public class CategoryResource {
 
     @POST
     @Transactional
-    @RolesAllowed({"ADMIN, USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public Response createCategory(CategoryRequestDto dto) {
         Category category = new Category();
         category.setName(dto.getName());
