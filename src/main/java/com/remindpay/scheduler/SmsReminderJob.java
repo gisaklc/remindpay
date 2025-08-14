@@ -6,6 +6,7 @@ import com.remindpay.model.Account;
 import com.remindpay.repository.AccountRepository;
 import com.remindpay.service.SmsService;
 import io.quarkus.scheduler.Scheduled;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -34,7 +36,7 @@ public class SmsReminderJob {
     public void sendDailyReminders() {
 
         List<Account> userAccounts = accountRepository.findAll().list();
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
         for (Account userAccount : userAccounts) {
             Message message = buildReminderMessageWithAlert(userAccount, today);
             if (message != null) {
