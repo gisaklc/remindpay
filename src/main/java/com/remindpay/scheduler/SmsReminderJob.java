@@ -1,24 +1,20 @@
 package com.remindpay.scheduler;
 
 import com.remindpay.dto.PhoneUtils;
-import com.remindpay.dto.SmsResponse;
 import com.remindpay.model.Account;
 import com.remindpay.repository.AccountRepository;
 import com.remindpay.service.SmsService;
 import io.quarkus.scheduler.Scheduled;
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 
 @ApplicationScoped
@@ -34,7 +30,7 @@ public class SmsReminderJob {
 
     @Scheduled(cron = "${reminder.cron}")
     public void sendDailyReminders() {
-
+        System.out.println("Executando tarefa agendada às 19:30 UTC...");
         List<Account> userAccounts = accountRepository.findAll().list();
         LocalDate today = LocalDate.now(ZoneId.of("America/Sao_Paulo"));
         for (Account userAccount : userAccounts) {
